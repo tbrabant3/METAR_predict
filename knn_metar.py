@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 dataset = pd.read_csv("jfk_metars.csv", delimiter=',')
 
-df = dataset.drop(columns=['station','date','Time2','ORIGIN','DEST', 'date2','Time'])
+df = dataset.drop(columns=['station','date','time','ORIGIN','DEST'])
 
 label_encoder = preprocessing.LabelEncoder()
 df['skyc1'] = label_encoder.fit_transform(df['skyc1'])
