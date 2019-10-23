@@ -1,39 +1,59 @@
+# Author: Ashton Allen
+#  Class:  CSI-330-01
+#  Certification of Authenticity:
+# I certify that this is entirely my own work, except where I have given fully documented
+# references to the work of others.  I understand the definition and consequences of
+# plagiarism and acknowledge that the assessor of this assignment may, for the purpose of
+# assessing this assignment reproduce this assignment and provide a copy to anothermember
+# of academic staff and / or communicate a copy of this assignment to a plagiarism checking
+# service(which may then retain a copy of this assignment on its database for the purpose
+# of future plagiarism checking).
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
 
+def load_dataset(csv):
+    dataset = pd.read_csv(csv, delimiter=',')
 
-dataset = pd.read_csv("jfk_metars.csv", delimiter=',')
+    df = dataset.drop(columns=['station', 'date', 'time', 'ORIGIN', 'DEST'])
 
-df = dataset.drop(columns=['station','date','time','ORIGIN','DEST'])
+    label_encoder = preprocessing.LabelEncoder()
+    df['skyc1'] = label_encoder.fit_transform(df['skyc1'])
 
-label_encoder = preprocessing.LabelEncoder()
-df['skyc1'] = label_encoder.fit_transform(df['skyc1'])
 
-X = df.iloc[:, :-1]
-y = df.iloc[:, -1]
+    X = df.iloc[:, :-1]
+    y = df.iloc[:, -1]
 
-# Split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+    return X,y
 
-# Scale / Normalize data
-scaler = preprocessing.StandardScaler(with_mean=True, with_std=True)
 
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.fit_transform(X_test)
+def scale_data(testing, training):
+    scaler = preprocessing.StandardScaler(with_mean=True, with_std=True)
 
-test = []
+    test = scaler.fit_transform(testing)
+    train = scaler.fit_transform(training)
 
-# Classifier to setup amount of neighbors and weighting type
-classifier = KNeighborsClassifier(n_neighbors=3, weights="uniform")
-classifier.fit(X_train, y_train)
+    return test, train
 
-test.append(classifier.score(X_test, y_test))
 
-# Use the training data to train the data then predict
-print(test)
+def main():
+    accuracy = []
+    X, y = load_dataset('jfk_metars.csv')
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=30)
+    X_test, X_train  = scale_data(X_test, X_train)
 
+    # Classifier to setup amount of neighbors and weighting type
+    classifier = KNeighborsClassifier(n_neighbors=2, weights="uniform")
+    classifier.fit(X_train, y_train)
+    print(X_train)
+
+    accuracy.append(classifier.score(X_test, y_test))
+    print("Accuracy: " + str(accuracy))
+
+if __name__ == '__main__':
+    main()
 
 
 
