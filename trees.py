@@ -13,6 +13,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
 
 # Change this number
 SEED = 1
@@ -20,21 +22,15 @@ SEED = 1
 
 def load_dataset(file):
     dataset = pd.read_csv(file, delimiter=',')
-    X = dataset.iloc[:, :-1]
-    y = dataset.iloc[:, -1]
 
-    # Transform any fields into their correct data type
+    df = dataset.drop(columns=['station', 'date', 'time', 'ORIGIN', 'DEST'])
 
-    # Drop specific columns that don't matter
-    return X, y
-
-
-def encode(X):
-    # Encode the data
     label_encoder = preprocessing.LabelEncoder()
-    for col in X.columns:
-        X[col] = label_encoder.fit_transform(X[col])
+    df['skyc1'] = label_encoder.fit_transform(df['skyc1'])
 
+    X = df.iloc[:, :-1]
+    y = df.iloc[:, -1]
+    return X, y
 
 def standard_scale(test, train):
     # Scale / Normalize data
@@ -45,15 +41,20 @@ def standard_scale(test, train):
 
 
 def main():
-    X, y = load_dataset("ENTER DATASET PATH HERE")
-    encode(X)
+    X, y = load_dataset("jfk_metars.csv")
+    # encode(X)
 
     # Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=30)
-    X_train, X_test = standard_scale(X_test, X_train)
+    # X_train, X_test = standard_scale(X_test, X_train)
 
-    dt = DecisionTreeClassifier(max_depth=6, random_state=SEED)
-    # What kind of kind of tree?
-    # Recreation
+    dt = DecisionTreeClassifier(max_depth=8, random_state=SEED)
+    dt.fit(X_train, y_train)
+
+    y_pred = dt.predict(X_test)
+    acc = accuracy_score(y_pred, y_test)
+    print("Test accuracy: ", acc)
 
 
+if __name__ == '__main__':
+    main()
