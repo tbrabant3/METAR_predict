@@ -1,4 +1,4 @@
-# Author: Tyler Brabant & Ashton Allen
+# Author: Tyler Brabant
 # Class:  CSI-270-01
 # Certification of Authenticity:
 # I certify that this is entirely my own work, except where I have given fully documented
