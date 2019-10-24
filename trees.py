@@ -42,11 +42,10 @@ def standard_scale(test, train):
 
 def main():
     X, y = load_dataset("jfk_metars.csv")
-    # encode(X)
 
     # Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=30)
-    # X_train, X_test = standard_scale(X_test, X_train)
+    X_train, X_test = standard_scale(X_test, X_train)
 
     dt = DecisionTreeClassifier(max_depth=8, random_state=SEED)
     dt.fit(X_train, y_train)

@@ -50,13 +50,14 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=30)
     X_test, X_train  = scale_data(X_test, X_train)
 
-    classifier = KNeighborsClassifier(n_neighbors=2, weights="uniform")
+    classifier = KNeighborsClassifier(n_neighbors=3, weights="uniform")
     classifier.fit(X_train, y_train)
 
     print(X_train)
 
     accuracy.append(classifier.score(X_test, y_test))
     print("Accuracy: " + str(accuracy))
+
 
 if __name__ == '__main__':
     main()
